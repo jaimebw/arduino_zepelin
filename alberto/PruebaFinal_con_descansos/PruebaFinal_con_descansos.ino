@@ -1,3 +1,5 @@
+// Autor: Alberto Gonzalez Viaña
+//
 #include <NewPing.h>
 #include "I2Cdev.h"
 #include "MPU6050.h"
@@ -17,6 +19,8 @@ float girosc_ang_z;
 float girosc_ang_z_prev;
 const int ledpinL = 10;
 const int ledpinR = 9;
+
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(57600);    //Iniciando puerto serial
