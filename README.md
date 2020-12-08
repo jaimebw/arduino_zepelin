@@ -15,7 +15,9 @@ Para el desarrollo de este trabajo se va a usar el microcontrolador UNO R3 de EL
 Para realizar el guiado del dirigible se usarán dos sensores:
 * IMU : este proporcionará el guiado inercial
 * Sensor de ultrasonidos: este proporcionará guiado en caso de que haya elementos obstruyendo el paso del dirigible
-### Librerias e info sobre los sensores
+
+
+### Librerias e info sobre los sensores
 
 * [IMU](https://github.com/adafruit/Adafruit_BNO055)
 * [Info de cómo usar el IMU](https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/arduino-code)
