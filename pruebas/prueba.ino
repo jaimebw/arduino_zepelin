@@ -40,7 +40,7 @@ void setup() {
 }
 
 void loop() {
-  int dist_sonar = sonar.ping_cm()
+  int dist_sonar = sonar.ping_cm();
   if (i==0){
     while (dist_sonar >= 50 || dist_sonar == 0) {  
     // Estoy especificando que cuando sea mayor que 50 cm la distancia. Especificar posteriormente la que queremos. El || (o) es por si esta muy lejos 
