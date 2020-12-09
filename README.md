@@ -27,6 +27,7 @@ Para realizar el guiado del dirigible se usarán dos sensores:
 Para conseguir que el dirigible se traslade es necesario incorporar una planta motor. En este caso se basará en unos motores de corriente continua posicionados a los lados del dirigle para poder crear momentos y poder propulsar de manera sencilla.
 
 ### Control de los motores
-Para realizarlo se necesitan 4 motores DC con un controlador que funcine con un transistor
+Para realizarlo se necesitan 4 motores DC con un controlador que funcine con un transistor  
+
 *[Control Motor](https://www.tutorialspoint.com/arduino/arduino_dc_motor.htm)
 
