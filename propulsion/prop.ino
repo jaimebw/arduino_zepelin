@@ -3,8 +3,8 @@
 
 int mover_motor(str motor, int time){
     /*
-    Funcion para mover el motor.
-    
+    Funcion para mover el motor. Solo hay HIGH o LOW.
+
     :param motor: elige motor izq o derecho
     :param time: tiempos en segundos de actuaction
     */
@@ -21,5 +21,11 @@ int mover_motor(str motor, int time){
        delay(time*1000);
        digitalWrite(motor_dcha,LOW);
     }
-    
+    else{
+        digitalWrite(motor_izq,HIGH);
+        digitalWrite(motor_dcha,HIGH);
+        delay(time*1000);
+        digitalWrite(motor_izq,LOW);
+        digitalWrite(motor_dcha,LOW);
+    }
 }
