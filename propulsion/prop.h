@@ -1,7 +1,7 @@
 
 
 
-int mover_motor(str motor, int time){
+int mover_motor(char motor, int time){
     /*
     Funcion para mover el motor. Solo hay HIGH o LOW.
 
@@ -10,12 +10,12 @@ int mover_motor(str motor, int time){
     */
     int motor_dcha = 13;
     int motor_izq = 12;
-    if (motor == "izq"){
+    if (motor == "i"){
         digitalWrite(motor_izq,HIGH);
         delay(time*1000);
         digitalWrite(motor_izq,LOW);
     }
-    else if (motor == "dcha")
+    else if (motor == "d")
     {
        digitalWrite(motor_dcha,HIGH);
        delay(time*1000);
