@@ -1,7 +1,7 @@
 /*
 autor: Jaime Bowen 
 
-Script principal para el diribile
+Script principal para el diribile con guiado inercial
 
 */
 #include <propulsion/prop.h>
