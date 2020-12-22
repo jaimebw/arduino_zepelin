@@ -15,8 +15,8 @@ void setup(){
   /* Initialise the sensor */
     if(!bno.begin())
     {
-        /* There was a problem detecting the BNO055 ... check your connections */
-        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+      
+        Serial.print("No se detecta el sensor");
         while(1);
     }
     
@@ -47,7 +47,7 @@ float acel_cal_y;
 
 void loop(){
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER); // vector de angulos de euler
-  imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER); // vector de acelearciones lineales
 // iterador 
 
   t = millis()/1000; // valor del tiempo
