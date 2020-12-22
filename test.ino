@@ -43,6 +43,7 @@ float vel0_z;
 float vel0_y;
 float vel_z;
 float acel_cal_y;
+float acel_y;
 
 void loop(){
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER); // vector de angulos de euler
@@ -59,31 +60,47 @@ void loop(){
     pos0_z = 0;
     vel0_z = 0;
     vel0_y = 0;
-    
   }
-  if (acel.y() 
-  diff_t = t - t0;
   /*
   Hay que añadir el filtro para las acelaraciones
+  // FILTRO EN CONSTRUCCIÓN
+  if (acel.y()>-0.45 || acel.y()<-0.5){
+    acel_y = 0;
+  }
+  else{
+    acel_y = acel.y();
+  }
   */
+  // Velocidades 
   vel_z = acel.z()* diff_t + vel0_z;
-  vel_y = (acel.y()-acel_cal_y)* diff_t + vel0_y; 
-  pos_z = vel_z * diff_t + pos0_z;
-  pos_y = vel_y * diff_t + pos0_y;
+  vel0_z = vel_z;
 
-  
-  Serial.print("Acel_y: "); Serial.println(acel.y());
-  Serial.print("Pos0_y: ");Serial.println(pos0_y);
-  Serial.print("Pos_y: ");Serial.println(pos_y);
-  Serial.println("-------------------------");
-  pos0_y = pos_y;
-  pos0_z = pos_z;
+  vel_y = acel.y()*diff_t * vel0_y;
   vel0_y = vel_y;
-  vel0_z = vel0_z;
+  // Posiciones
+
+  pos_z = vel_z * pow(diff_t,2) + pos0_z;
+  pos_y = vel_y * pow(diff_t,2) + pos0_y;
+  pos0_z = pos_z;
+  pos0_y = pos_y;
+  // tiempo
   t0 = t;
 
- 
- 
+  // Print por pantalla
+  Serial.println("-------------------------");
+  Serial.print("Acel_y: "); Serial.println(acel.y());
+  Serial.print("Vel_y: "); Serial.println(vel_y);
+  Serial.print("Pos_y: "); Serial.println(pos_y);
+  Serial.println("-------------------------");
+  Serial.print("Acel_z: "); Serial.println(acel.z());
+  Serial.print("Vel_z: "); Serial.println(vel_z);
+  Serial.print("Pos_z: "); Serial.println(pos_z);
+  Serial.println("-------------------------");
+  Serial.print("Giro_x: "); Serial.println(euler.x());
+  Serial.print("Iteracion: "); Serial.println(i);
+  Serial.println("############################");
+
+  // Contar iteracion, importante para la primera
   i = i +1;
   delay(1000);
 }
