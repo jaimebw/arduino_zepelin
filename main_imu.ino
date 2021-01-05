@@ -4,8 +4,15 @@ autor: Jaime Bowen
 Script principal para el diribile con guiado inercial
 
 */
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 #include <propulsion/prop.h>
 #include <guiado/guide.h>
+
+
+Adafruit_BNO055 bno = Adafruit_BNO055(55); // enciendo el IMU
 
 
 int motor_dcha = 13;
@@ -14,11 +21,27 @@ int motor_izq = 12;
 void setup(){
     pinMode(motor_izq, OUTPUT);
     pinMode(motor_dcha,OUTPUT);
-    Serial.begin(57600);
+
+    Serial.begin(9600);
+    Serial.println("Orientation Sensor Test"); Serial.println("");
+  /* Initialise the sensor */
+    if(!bno.begin())
+    {
+        /* There was a problem detecting the BNO055 ... check your connections */
+        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+    }
+    
+  delay(1000);
+    
+  bno.setExtCrystalUse(true);
     
 }
  
 void loop(){
+    sensors_event_t event;
+    bno.getEvent(&event);
+
     int i = 0;
     while (i <4){
         if(i ==0) {
