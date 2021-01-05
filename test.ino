@@ -26,7 +26,10 @@ void setup(){
     
 }
 
-
+int cali =0;
+int cal_gyro = 0;
+int cal_mag = 0;
+int cal_accel = 0;
 float vel_y;
 int i = 0; 
 float diff_t;
@@ -44,6 +47,34 @@ float vel0_y;
 float vel_z;
 float acel_cal_y;
 
+int calibrar(void){
+  /* Get the four calibration values (0..3) */
+  /* Any sensor data reporting 0 should be ignored, */
+  /* 3 means 'fully calibrated" */
+  uint8_t system, gyro, accel, mag;
+  system = gyro = accel = mag = 0;
+  bno.getCalibration(&system, &gyro, &accel, &mag);
+  
+  /* The data should be ignored until the system calibration is > 0 
+  Serial.print("\t");*/
+  if (!system)
+  {
+    Serial.print("! ");
+  }
+  
+  // Display the individual values 
+  Serial.print("Sys:");
+  Serial.print(system, DEC);
+  Serial.println(" G:");
+  Serial.print(gyro, DEC);
+  Serial.println(" A:");
+  Serial.print(accel, DEC);
+  Serial.println(" M:");
+  Serial.print(mag, DEC);
+  
+  return accel, mag, gyro;
+
+}
 
 void loop(){
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER); // vector de angulos de euler
