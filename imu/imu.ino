@@ -4,6 +4,14 @@
 #include <utility/imumaths.h>
 
 
+// PINES PARA LOS MOTORES
+int IN1 = 2;    //Se definen pines de salida correspondientes al módulo de control
+int IN2 = 3;   
+int ENA = 5;    //Recomendable que ENA y ENB estén conectados a pines PWB para mayor eficiencia en los comandos
+int IN3 = 7;
+int IN4 = 8;
+int ENB = 9; 
+
 Adafruit_BNO055 bno = Adafruit_BNO055(55); // enciendo el IMU
 
 
@@ -54,31 +62,26 @@ void setup(){
   displayCalStatus();
   delay(1000);
   bno.setExtCrystalUse(true);  
-  /*
-do{
-   sensors_event_t event;
-   bno.getEvent(&event);
-   cal_accel, cal_mag, cal_gyro  = displayCalStatus();
-  //Serial.print("g = ");Serial.println(cal_gyro);
- // Serial.print("a = ");Serial.println(cal_accel);
- // Serial.print("mag = ");Serial.println(cal_mag);
- // Serial.println("_____________");
-  delay(100);
-  }while((cal_gyro!= 3) && (cal_accel!= 3)&& (cal_mag!= 3));
-  
-  Serial.print("Pene");
-*/
+  pinMode(IN1, OUTPUT);  //Se definen los mencionados pines como salidas
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
 
-
-  
 }
-
+//#############################
+// FUNCIONES PARA EL VOID LOOP
+//#############################
 float calStatus(){
   sensors_event_t event;
   
 }
-
-
+struct TRAMO {
+  float coor_y;
+  float coor_z;
+  float giro;
+  
+};
+// Declaracion de variables para acel, vel, pos y tiempo
 float t0; float t; float diff_t;
 
 float pos_x0; float pos_x;
@@ -110,10 +113,12 @@ float filtro_accel(float antes,float ahora, float tol ){
   }
 }
 float filtro_simple(float previo, float acel){
+  // Filtro sencillo para la acelaracion
   if (abs(acel - previo) < 0 )
   return acel-previo;
 }
 void printer(char nombre[],float x = 0,float y = 0,float z = 0){
+  // Funcion para simplificar print por pantalla
     Serial.println("^^^^^^^^^^^^^^^^^^^^");
     Serial.println(nombre);
     Serial.println("^^^^^^^^^^^^^^^^^^^^");
@@ -128,13 +133,94 @@ void printer(char nombre[],float x = 0,float y = 0,float z = 0){
   }
 
 
+float angulo_x(){
+  // Obtener el angulo en el eje X
+  sensors_event_t event; 
+    bno.getEvent(&event);
+    return event.orientation.x;
+}
+  
+void adelante(void){
+    // Hacia adelante
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+  }
+  void parar(void){
+    // Parar el vehículo
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
 
+    
+  }
+  void adetras(void){
+    // Hacia detras
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+  }
+  void rotardcha(void){
+    // Rotar a la dcha
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+    
+  }
+  void rotarizq(void){
+    // Rotar a la izquierda
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+    
+  }
+float posicion_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t){
+  // Devuelve la posicion del vehiculo
+  imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  float acel_y;
+  float vel_y;
+  float pos_y;
+  if (abs(acel.y()-acel_y0) < tol){
+    acel_y = 0;
+    
+  }
+  else{
+    acel_y = acel.y();
+  }
+  vel_y = vel_y0 + acel_y* diff_t;
+  pos_y = pos_y0 + vel_y*(diff_t) + 0.5*acel_y*(pow(diff_t,2));
+  return pos_y;
+}
+float velocidad_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t){
+  // Devuelve la velocidad del vehiculo
+  imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  float acel_y;
+  float vel_y;
+  float pos_y;
+  if (abs(acel.y()-acel_y0) < tol){
+    acel_y = 0;
+    
+  }
+  else{
+    acel_y = acel.y();
+  }
+  vel_y = vel_y0 + acel_y* diff_t;
+ 
+  return vel_y;
+}
+  
 
 
 void loop(){
-  // Código de calibración y para ver que pasa exactamente en el vehículo
+  
   imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   if (contador == 0){
+    // Empieza la calibración del sensor
    do{
       sensors_event_t event;
       bno.getEvent(&event);
@@ -167,51 +253,91 @@ void loop(){
     bno.getEvent(&event);
     //printer("Orientacion",event.orientation.x,event.orientation.y,event.orientation.z);
    
-   
-   acel_z = filtro_accel(mean_z,acel.z(),tol);
-   accul_z = accul_z + acel.z();
-   mean_z = accul_z/(contador);
-   //printer("Loco",acel_z,accul_z,mean_z);
-   
-   //acel_z0 = acel_z;
-   // 9.36
-   acel_y = filtro_accel(mean_y,acel.y(),tol);
-   accul_y = accul_y + acel.y();
-   mean_y = accul_y/(contador);
-   //acel_y0 = acel_y;
-   // 0.45
-   acel_x = filtro_accel(mean_x ,acel.x(),tol);
-   accul_x = accul_x + acel.x();
-   mean_x = accul_x/(contador);
-   //acel_x0 = acel_x;
-   // 0.33 
-    // Código para obtener posicion
- 
-    
-    
-    vel_z = acel_z * diff_t + vel_z0;
-    vel_y = acel_y* diff_t + vel_y0;
-    
-    
-    pos_z = acel_z* pow(diff_t,2)*0.5+ vel_z0 * diff_t+ pos_z0;
-    pos_y = acel_y * pow(diff_t,2)*0.5+vel_y0*diff_t + pos_y0;
-
-    
     pos_y0 = pos_y;
     pos_z0 = pos_z;
     vel_z0 = vel_z;
     vel_y0 = vel_y;
     t0 = t;
+
+    TRAMO AB;
+    AB.coor_y = 1;
+    AB.coor_z = 0;
+    AB.giro = 0;
+    TRAMO BC;
+    BC.coor_y = 2;
+    BC.coor_z = 1;
+    BC.giro = 45;
+    TRAMO CD;
+    CD.coor_y = 3;
+    CD.coor_z = 0;
+    CD.giro = -45;
+    TRAMO DE;
+    DE.coor_y = 4;
+    DE.coor_z = 0;
+    DE.giro = 0;
+// Recorrido
+//posicion_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t)
+while(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)< AB.coor_y){
+  adelante();
+  if (pos_y > AB.coor_y){
+    parar();
+  }
+}
+while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t) > AB.coor_y)&(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t) <BC.coor_y )){
+  rotardcha();
+  if (BC.giro > angulo_x()){
+        parar();
+        adelante();
+      }
+}
+while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)>BC.coor_y)&(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)<CD.coor_y)){
+  rotarizq();
+  if (CD.giro < angulo_x()){
+    parar();
+    adelante();
+      }
+}
+while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)> CD.coor_y)){
+  adelante();
+  delay(1000);
+  parar();
+  delay(10000); // parada final
+}
   
-    printer("Aceleracion",acel_x,acel_y,acel_z);
-    printer("Aceleracion",acel.x(),acel.y(),acel.z());
-    printer("Velocidad",0,vel_y,vel_z);
-    printer("Posicion",0,pos_z,pos_y);
-    Serial.println(contador);
+
+     /*
+    }
+    if (pos_y< AB.coor_y){
+      moverAdelante();
+      if (pos_y > AB.coor_y){
+        parar();  
+      }
+ } else if ((pos_y > AB.coor_y)&(pos_y <BC.coor_y )) {
+      derecha();
+      if (BC.giro > giro_x){
+        parar();
+        adelante();
+      }
+ }else if ((pos_y>BC.coor_y)&(pos_y<CD.coor_y)){
+  izquierda();
+  if (DC.giro > abs(giro_x){
+    parar();
+    adeñante();
+}
+ }else if((pos_y > CD.coor_y)){
+  adelante();
+  delay(1000);
+  parar();
+  delay(10000); // parada final
+  
+ }
+    parar();
+    delay(100);
     
+
     
     delay(2000);
     
   
-  
+  */
   }
