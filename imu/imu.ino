@@ -194,25 +194,9 @@ float posicion_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t){
   }
   vel_y = vel_y0 + acel_y* diff_t;
   pos_y = pos_y0 + vel_y*(diff_t) + 0.5*acel_y*(pow(diff_t,2));
-  return pos_y;
+  return acel_y,vel_y,pos_y;
 }
-float velocidad_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t){
-  // Devuelve la velocidad del vehiculo
-  imu::Vector<3> acel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  float acel_y;
-  float vel_y;
-  float pos_y;
-  if (abs(acel.y()-acel_y0) < tol){
-    acel_y = 0;
-    
-  }
-  else{
-    acel_y = acel.y();
-  }
-  vel_y = vel_y0 + acel_y* diff_t;
- 
-  return vel_y;
-}
+
   
 
 
@@ -277,27 +261,58 @@ void loop(){
     DE.giro = 0;
 // Recorrido
 //posicion_y( float acel_y0,float vel_y0,float pos_y0 ,float diff_t)
-while(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)< AB.coor_y){
+while(pos_y < AB.coor_y){
+  vel_y,pos_y = posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t);
+  pos_y0 = pos_y;
+  vel_y0 = vel_y;
+  acel_y0 = acel_y;
+  diff_t = t-t0;
   adelante();
   if (pos_y > AB.coor_y){
+    vel_y,pos_y = posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t);
+    pos_y0 = pos_y;
+    vel_y0 = vel_y;
+    acel_y0 = acel_y;
+    diff_t = t-t0;
     parar();
   }
 }
-while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t) > AB.coor_y)&(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t) <BC.coor_y )){
+while((pos_y > AB.coor_y)&(pos_y  <BC.coor_y )){
+    vel_y,pos_y = posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t);
+    pos_y0 = pos_y;
+    vel_y0 = vel_y;
+    acel_y0 = acel_y;
+    diff_t = t-t0;
   rotardcha();
-  if (BC.giro > angulo_x()){
+  if (BC.giro- angulo_x() >0 ){
         parar();
         adelante();
       }
 }
-while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)>BC.coor_y)&(posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)<CD.coor_y)){
+while((pos_y>BC.coor_y)&(pos_y<CD.coor_y)){
+  vel_y,pos_y = posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t);
+    pos_y0 = pos_y;
+    vel_y0 = vel_y;
+    acel_y0 = acel_y;
+    diff_t = t-t0;
+  parar();
+  delay(500);
   rotarizq();
-  if (CD.giro < angulo_x()){
+  delay(1000);
+  if (abs(CD.giro) -angulo_x() <0 ){
     parar();
+    delay(500);
     adelante();
       }
 }
-while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)> CD.coor_y)){
+while((pos_y> CD.coor_y)){
+  vel_y,pos_y = posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t);
+   pos_y0 = pos_y;
+   vel_y0 = vel_y;
+   acel_y0 = acel_y;
+   diff_t = t-t0;
+  parar();
+  delay(500);
   adelante();
   delay(1000);
   parar();
@@ -305,39 +320,4 @@ while((posicion_y(acel_y0,vel_y0,pos_y0 ,diff_t)> CD.coor_y)){
 }
   
 
-     /*
-    }
-    if (pos_y< AB.coor_y){
-      moverAdelante();
-      if (pos_y > AB.coor_y){
-        parar();  
-      }
- } else if ((pos_y > AB.coor_y)&(pos_y <BC.coor_y )) {
-      derecha();
-      if (BC.giro > giro_x){
-        parar();
-        adelante();
-      }
- }else if ((pos_y>BC.coor_y)&(pos_y<CD.coor_y)){
-  izquierda();
-  if (DC.giro > abs(giro_x){
-    parar();
-    adeñante();
-}
- }else if((pos_y > CD.coor_y)){
-  adelante();
-  delay(1000);
-  parar();
-  delay(10000); // parada final
-  
- }
-    parar();
-    delay(100);
-    
-
-    
-    delay(2000);
-    
-  
-  */
   }
