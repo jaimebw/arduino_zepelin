@@ -1,4 +1,4 @@
-# Repo con el código arudino para el dirigible del trabajao de 1º de MUIA de la UEM
+# Repo con el código arudino para el dirigible(rover) del trabajao de 1º de MUIA de la UEM
 (en desarrollo)
 [Drive](https://drive.google.com/drive/folders/1aVQqiT-GZWuNmXhBgVc2obI3MjK_QTwS?usp=sharing)
 ## Proceso de desarrollo 
@@ -21,9 +21,10 @@ Para conseguir que elrover se traslade es necesario incorporar una planta motor.
 ### 2.1 Control de los motores
 Para realizarlo se necesitan 4 motores DC con un controlador que funcine con un transistor  
 
-*[Control Motor](https://www.tutorialspoint.com/arduino/arduino_dc_motor.htm)
+* [Control Motor](https://www.tutorialspoint.com/arduino/arduino_dc_motor.htm)
 
 ## 3. Guiado  
 
 Para realizar el guiado del dirigible se usarán dos sensores:
+
 * IMU : este proporcionará el guiado inercial
