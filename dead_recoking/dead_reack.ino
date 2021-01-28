@@ -4,6 +4,7 @@ int ENA = 5;    //Recomendable que ENA y ENB estén conectados a pines PWB para 
 int IN3 = 7;
 int IN4 = 8;
 int ENB = 9;    
+int pin_led = 12;
 int t = 1000 * 1;
 
 
@@ -14,6 +15,7 @@ void setup(){
   //pinMode(ENA, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
+  pinMode(pin_led,OUTPUT);
   //pinMode(ENB, OUTPUT);
 }
 int i = 0;
@@ -59,7 +61,11 @@ int sec(float t){
   return t*1000;
 }
 void loop(){
-  
+  digitalWrite(pin_led, HIGH);   
+  delay(500);                      
+  digitalWrite(pin_led, LOW);    
+  delay(500); 
+
   //Avance 
   //digitalWrite(ENA, HIGH);
   

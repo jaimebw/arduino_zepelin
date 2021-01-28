@@ -11,6 +11,7 @@ int ENA = 5;    //Recomendable que ENA y ENB estén conectados a pines PWB para 
 int IN3 = 7;
 int IN4 = 8;
 int ENB = 9; 
+int pin_ed = 12;
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55); // enciendo el IMU
 
@@ -66,7 +67,7 @@ void setup(){
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
-
+  pinMode(pin_led,OUTPUT);
 }
 //#############################
 // FUNCIONES PARA EL VOID LOOP
@@ -214,7 +215,7 @@ void loop(){
   //while((cal_gyro= 3) && (cal_accel= 3)&& (cal_mag= 3));
     
     }
-    
+    digitalWrite(pin_led, HIGH); 
     if (contador == 0){
       acel_x0 = acel.x();
       acel_y0 = acel.y();
